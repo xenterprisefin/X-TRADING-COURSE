@@ -10,30 +10,38 @@ st.markdown("""
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
-    /* حاوية الفيديو لمنع التسريب */
-    .premium-video-box {
+    /* تصميم الحاوية الاحترافية */
+    .video-wrapper {
         position: relative;
-        width: 100%;
-        max-width: 850px;
-        margin: auto;
-        border-radius: 20px;
+        padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+        height: 0;
         overflow: hidden;
-        border: 1px solid #d4af37;
-        box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+        max-width: 900px;
+        margin: auto;
+        border-radius: 15px;
+        border: 2px solid #d4af37;
         background: #000;
+        box-shadow: 0 0 50px rgba(0,0,0,1);
     }
-
-    /* طبقة شفافة تمنع الضغط على أزرار يوتيوب الجانبية في النهاية */
-    .video-guard {
+    .video-wrapper iframe {
         position: absolute;
-        bottom: 0;
-        right: 0;
+        top: 0;
+        left: 0;
         width: 100%;
-        height: 50px;
-        z-index: 5;
-        background: transparent;
+        height: 100%;
+        pointer-events: auto;
     }
     
+    /* طبقة لمنع ظهور شريط يوتيوب العلوي والاقتراحات */
+    .overlay-top {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 40px;
+        background: black;
+        z-index: 10;
+    }
     h1, h2 { color: #d4af37 !important; text-align: center; }
     </style>
     """, unsafe_allow_html=True)
@@ -77,7 +85,7 @@ lessons = {
     "الخاتمة": "ItZ1n7AtznE"
 }
 
-# --- 3. الدخول ---
+# --- 3. نظام الدخول ---
 if "logged" not in st.session_state: st.session_state.logged = False
 
 if not st.session_state.logged:
@@ -93,7 +101,7 @@ if not st.session_state.logged:
                     st.rerun()
                 else: st.error("بيانات خاطئة")
 else:
-    # --- 4. العرض ---
+    # --- 4. العرض الاحترافي ---
     with st.sidebar:
         st.markdown("<h2 style='text-align: left;'>XFLOOS</h2>", unsafe_allow_html=True)
         st.markdown("---")
@@ -105,16 +113,17 @@ else:
     st.markdown(f"<h2>{choice}</h2>", unsafe_allow_html=True)
     v_id = lessons[choice]
     
-    # الكود السحري لتقليل الترشيحات
+    # استخدام كود Embed يمنع يوتيوب من التحكم الكامل (نظام المشغل النظيف)
     st.markdown(f"""
-        <div class="premium-video-box">
-            <div class="video-guard"></div>
-            <iframe width="100%" height="480" 
-            src="https://www.youtube.com/embed/{v_id}?rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&fs=1&color=white" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen></iframe>
+        <div class="video-wrapper">
+            <div class="overlay-top"></div>
+            <iframe 
+                src="https://www.youtube-nocookie.com/embed/{v_id}?rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&fs=1&disablekb=1" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
         </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("<p style='text-align: center; color: #444; margin-top: 30px;'>جميع الفيديوهات ملك لأكاديمية Xfloos</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #444; margin-top: 30px;'>حصري لأكاديمية Xfloos</p>", unsafe_allow_html=True)
