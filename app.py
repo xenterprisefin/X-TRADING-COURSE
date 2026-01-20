@@ -39,4 +39,5 @@ else:
         user_q = st.chat_input("اسأل أي سؤال عن الدرس...")
         if user_q:
             response = model.generate_content(user_q)
+
             st.chat_message("assistant").write(response.text)
