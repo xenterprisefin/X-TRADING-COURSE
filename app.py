@@ -10,39 +10,36 @@ st.markdown("""
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
-    /* تصميم الحاوية الاحترافية */
-    .video-wrapper {
+    /* تصميم الحاوية لضبط الأبعاد ومنع القطع */
+    .video-main-container {
+        width: 100%;
+        max-width: 1000px;
+        margin: auto;
+        border: 2px solid #d4af37;
+        border-radius: 15px;
+        overflow: hidden;
+        background-color: #000;
+        box-shadow: 0 10px 50px rgba(0,0,0,0.8);
+    }
+
+    /* ضبط نسبة العرض للارتفاع 16:9 عشان مفيش حاجة تتقطع */
+    .responsive-iframe {
         position: relative;
-        padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+        padding-bottom: 56.25%; /* 16:9 */
         height: 0;
         overflow: hidden;
-        max-width: 900px;
-        margin: auto;
-        border-radius: 15px;
-        border: 2px solid #d4af37;
-        background: #000;
-        box-shadow: 0 0 50px rgba(0,0,0,1);
     }
-    .video-wrapper iframe {
+    .responsive-iframe iframe {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        pointer-events: auto;
+        border: 0;
     }
-    
-    /* طبقة لمنع ظهور شريط يوتيوب العلوي والاقتراحات */
-    .overlay-top {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 40px;
-        background: black;
-        z-index: 10;
-    }
-    h1, h2 { color: #d4af37 !important; text-align: center; }
+
+    h1, h2 { color: #d4af37 !important; text-align: center; font-family: sans-serif; }
+    .stRadio > label { font-weight: bold; color: #d4af37 !important; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -101,7 +98,7 @@ if not st.session_state.logged:
                     st.rerun()
                 else: st.error("بيانات خاطئة")
 else:
-    # --- 4. العرض الاحترافي ---
+    # --- 4. العرض ---
     with st.sidebar:
         st.markdown("<h2 style='text-align: left;'>XFLOOS</h2>", unsafe_allow_html=True)
         st.markdown("---")
@@ -113,17 +110,16 @@ else:
     st.markdown(f"<h2>{choice}</h2>", unsafe_allow_html=True)
     v_id = lessons[choice]
     
-    # استخدام كود Embed يمنع يوتيوب من التحكم الكامل (نظام المشغل النظيف)
+    # الكود الجديد اللي بيظبط المقاسات ويمنع القطع
     st.markdown(f"""
-        <div class="video-wrapper">
-            <div class="overlay-top"></div>
-            <iframe 
-                src="https://www.youtube-nocookie.com/embed/{v_id}?rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&fs=1&disablekb=1" 
-                frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowfullscreen>
-            </iframe>
+        <div class="video-main-container">
+            <div class="responsive-iframe">
+                <iframe 
+                    src="https://www.youtube-nocookie.com/embed/{v_id}?rel=0&modestbranding=1&controls=1&showinfo=0" 
+                    allowfullscreen>
+                </iframe>
+            </div>
         </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("<p style='text-align: center; color: #444; margin-top: 30px;'>حصري لأكاديمية Xfloos</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #444; margin-top: 20px;'>حصري لأكاديمية Xfloos</p>", unsafe_allow_html=True)
