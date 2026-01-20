@@ -1,24 +1,52 @@
 import streamlit as st
-import google.generativeai as genai
 
-# --- 1. إعدادات الصفحة ---
-st.set_page_config(page_title="منصة الكورس", layout="wide")
+# --- 1. إعدادات الهوية والتصميم (Xfloos Academy Premium) ---
+st.set_page_config(page_title="Xfloos Academy", layout="wide", page_icon="💰")
 
-# إخفاء العلامات الافتراضية
+# كود CSS متطور لإخفاء هوية يوتيوب وتحسين المظهر
 st.markdown("""
     <style>
+    .stApp { background-color: #050505; color: #ffffff; }
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
+    
+    /* تصميم القائمة الجانبية */
+    section[data-testid="stSidebar"] {
+        background-color: #0a0a0a !important;
+        border-right: 1px solid #d4af37;
+    }
+
+    /* كارت الفيديو الاحترافي */
+    .video-container {
+        position: relative;
+        width: 100%;
+        max-width: 900px;
+        margin: auto;
+        border-radius: 15px;
+        overflow: hidden;
+        border: 2px solid #1a1a1a;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+        background: #000;
+    }
+
+    /* طبقة حماية لإخفاء شعار يوتيوب العلوي */
+    .video-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 60px; /* تغطية شريط العنوان */
+        z-index: 10;
+        background: transparent;
+    }
+    
+    h1, h2 { color: #d4af37 !important; text-align: center; }
+    .stRadio > label { font-weight: bold; color: #d4af37 !important; }
     </style>
     """, unsafe_allow_html=True)
 
-# إعداد الذكاء الاصطناعي
-if "GENAI_API_KEY" in st.secrets:
-    genai.configure(api_key=st.secrets["GENAI_API_KEY"])
-    model = genai.GenerativeModel('gemini-1.5-flash')
-
-# --- 2. قائمة الدروس (بالعناوين الأصلية من صورك بالترتيب) ---
+# --- 2. بيانات الدروس ---
 lessons = {
     "طريقة حساب مكسب": "nhmjYNcFhFw",
     "X - Trading": "x_bvpU0uBqY",
@@ -61,44 +89,38 @@ lessons = {
 if "logged" not in st.session_state: st.session_state.logged = False
 
 if not st.session_state.logged:
-    st.title("🔐 تسجيل الدخول")
-    u = st.text_input("ID")
-    p = st.text_input("Password", type="password")
-    if st.button("دخول"):
-        if u == "student1" and p == "12345":
-            st.session_state.logged = True
-            st.rerun()
-        else: st.error("بيانات خاطئة")
+    st.markdown("<h1 style='margin-top: 100px;'>XFLOOS ACADEMY</h1>", unsafe_allow_html=True)
+    c1, c2, c3 = st.columns([1, 1.5, 1])
+    with c2:
+        with st.form("login"):
+            u = st.text_input("ID")
+            p = st.text_input("Password", type="password")
+            if st.form_submit_button("دخول المنهج"):
+                if u == "student1" and p == "12345":
+                    st.session_state.logged = True
+                    st.rerun()
+                else: st.error("خطأ في البيانات")
 else:
-    # --- 4. المنصة ---
+    # --- 4. واجهة العرض الاحترافية ---
     with st.sidebar:
-        st.title("قائمة الدروس")
-        choice = st.radio("", list(lessons.keys()))
+        st.markdown("<h2 style='text-align: left;'>XFLOOS</h2>", unsafe_allow_html=True)
+        st.markdown("---")
+        choice = st.radio("اختر الدرس:", list(lessons.keys()))
         if st.button("خروج"):
             st.session_state.logged = False
             st.rerun()
 
-    c1, c2 = st.columns([2, 1])
-    with c1:
-        st.header(choice)
-        v_id = lessons[choice]
-        st.components.v1.html(f"""
-            <iframe width="100%" height="400" 
-            src="https://www.youtube.com/embed/{v_id}?rel=0" 
-            frameborder="0" allowfullscreen></iframe>
-        """, height=410)
+    st.markdown(f"<h2>{choice}</h2>", unsafe_allow_html=True)
+    v_id = lessons[choice]
     
-    with c2:
-        st.subheader("🤖 مساعد AI")
-        if "msgs" not in st.session_state: st.session_state.msgs = []
-        for m in st.session_state.msgs:
-            with st.chat_message(m["role"]): st.markdown(m["content"])
-        
-        if prompt := st.chat_input("اسأل المساعد..."):
-            st.session_state.msgs.append({"role":"user","content":prompt})
-            with st.chat_message("user"): st.markdown(prompt)
-            try:
-                res = model.generate_content(f"جاوب الطالب عن: {prompt}")
-                with st.chat_message("assistant"): st.markdown(res.text)
-                st.session_state.msgs.append({"role":"assistant","content":res.text})
-            except: st.error("تأكد من الـ API Key")
+    # مشغل فيديو مخصص لإخفاء معالم يوتيوب
+    st.markdown(f"""
+        <div class="video-container">
+            <div class="video-overlay"></div>
+            <iframe width="100%" height="500" 
+            src="https://www.youtube.com/embed/{v_id}?rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&disablekb=1" 
+            frameborder="0" allowfullscreen style="border-radius: 15px;"></iframe>
+        </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<p style='text-align: center; color: #444; margin-top: 30px;'>© 2024 Xfloos Academy - المحتوى محمي برمجياً</p>", unsafe_allow_html=True)
