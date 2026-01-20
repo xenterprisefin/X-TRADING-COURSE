@@ -1,9 +1,8 @@
 import streamlit as st
 
-# --- 1. إعدادات الهوية والتصميم (Xfloos Academy Premium) ---
+# --- 1. إعدادات الهوية ---
 st.set_page_config(page_title="Xfloos Academy", layout="wide", page_icon="💰")
 
-# كود CSS متطور لإخفاء هوية يوتيوب وتحسين المظهر
 st.markdown("""
     <style>
     .stApp { background-color: #050505; color: #ffffff; }
@@ -11,42 +10,35 @@ st.markdown("""
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
-    /* تصميم القائمة الجانبية */
-    section[data-testid="stSidebar"] {
-        background-color: #0a0a0a !important;
-        border-right: 1px solid #d4af37;
-    }
-
-    /* كارت الفيديو الاحترافي */
-    .video-container {
+    /* حاوية الفيديو لمنع التسريب */
+    .premium-video-box {
         position: relative;
         width: 100%;
-        max-width: 900px;
+        max-width: 850px;
         margin: auto;
-        border-radius: 15px;
+        border-radius: 20px;
         overflow: hidden;
-        border: 2px solid #1a1a1a;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+        border: 1px solid #d4af37;
+        box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
         background: #000;
     }
 
-    /* طبقة حماية لإخفاء شعار يوتيوب العلوي */
-    .video-overlay {
+    /* طبقة شفافة تمنع الضغط على أزرار يوتيوب الجانبية في النهاية */
+    .video-guard {
         position: absolute;
-        top: 0;
-        left: 0;
+        bottom: 0;
+        right: 0;
         width: 100%;
-        height: 60px; /* تغطية شريط العنوان */
-        z-index: 10;
+        height: 50px;
+        z-index: 5;
         background: transparent;
     }
     
     h1, h2 { color: #d4af37 !important; text-align: center; }
-    .stRadio > label { font-weight: bold; color: #d4af37 !important; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. بيانات الدروس ---
+# --- 2. البيانات ---
 lessons = {
     "طريقة حساب مكسب": "nhmjYNcFhFw",
     "X - Trading": "x_bvpU0uBqY",
@@ -85,7 +77,7 @@ lessons = {
     "الخاتمة": "ItZ1n7AtznE"
 }
 
-# --- 3. نظام الدخول ---
+# --- 3. الدخول ---
 if "logged" not in st.session_state: st.session_state.logged = False
 
 if not st.session_state.logged:
@@ -99,13 +91,13 @@ if not st.session_state.logged:
                 if u == "student1" and p == "12345":
                     st.session_state.logged = True
                     st.rerun()
-                else: st.error("خطأ في البيانات")
+                else: st.error("بيانات خاطئة")
 else:
-    # --- 4. واجهة العرض الاحترافية ---
+    # --- 4. العرض ---
     with st.sidebar:
         st.markdown("<h2 style='text-align: left;'>XFLOOS</h2>", unsafe_allow_html=True)
         st.markdown("---")
-        choice = st.radio("اختر الدرس:", list(lessons.keys()))
+        choice = st.radio("قائمة الدروس:", list(lessons.keys()))
         if st.button("خروج"):
             st.session_state.logged = False
             st.rerun()
@@ -113,14 +105,16 @@ else:
     st.markdown(f"<h2>{choice}</h2>", unsafe_allow_html=True)
     v_id = lessons[choice]
     
-    # مشغل فيديو مخصص لإخفاء معالم يوتيوب
+    # الكود السحري لتقليل الترشيحات
     st.markdown(f"""
-        <div class="video-container">
-            <div class="video-overlay"></div>
-            <iframe width="100%" height="500" 
-            src="https://www.youtube.com/embed/{v_id}?rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&disablekb=1" 
-            frameborder="0" allowfullscreen style="border-radius: 15px;"></iframe>
+        <div class="premium-video-box">
+            <div class="video-guard"></div>
+            <iframe width="100%" height="480" 
+            src="https://www.youtube.com/embed/{v_id}?rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&fs=1&color=white" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen></iframe>
         </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("<p style='text-align: center; color: #444; margin-top: 30px;'>© 2024 Xfloos Academy - المحتوى محمي برمجياً</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #444; margin-top: 30px;'>جميع الفيديوهات ملك لأكاديمية Xfloos</p>", unsafe_allow_html=True)
